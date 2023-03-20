@@ -1,0 +1,61 @@
+version: "3.3"
+
+services:
+  dedipoc-api:
+    build:
+      context: ./dedipoc-api/
+    ports:
+      - 3001:3001
+    environment:
+      - SERVICE_NAME=Dedipoc API
+      - SERVER_PORT=3001
+      - DATABASE_USERNAME=dedipoc
+      - DATABASE_PASSWORD=sausages
+      - DATABASE_CLUSTER=dedipoc-db
+      - DATABASE_NAME=dedipoc-db
+      - DATABASE_AUTH=admin-dedipoc-db
+      - DATABASE_PORT=27017
+      - SESSION_SECRET=0eaV6dfLvD
+      - STORE_SECRET=TIrC3HL2Pt
+    volumes:
+      - /app/node_modules
+      - /home/patrick/Downloads/dedipoc:/app/media
+      - ./dedipoc-api/src:/app/src
+      - ./logs:/app/logs
+    depends_on:
+      - dedipoc-db
+    restart: always
+
+  dedipoc-db:
+    image: mongo:4.2.8
+    environment:
+      - MONGO_INITDB_DATABASE=admin-dedipoc-db
+    ports:
+      - 27017
+    volumes:
+      - mongodb:/data/db
+      - mongodb_config:/data/configdb
+      - "$PWD/mongo-entrypoint/:/docker-entrypoint-initdb.d/"
+    restart: always
+
+  dedipoc:
+    stdin_open: true
+    build:
+      context: ./dedipoc/
+    volumes:
+      - /app/node_modules
+      - ./dedipoc:/app
+  nginx:
+    depends_on:
+      - dedipoc
+      - dedipoc-api
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - "3050:80"
+volumes:
+  mongodb:
+  mongodb_config:
+
