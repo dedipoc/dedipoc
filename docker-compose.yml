@@ -19,7 +19,7 @@ services:
       - STORE_SECRET=TIrC3HL2Pt
     volumes:
       - /app/node_modules
-      - /home/patrick/Downloads/dedipoc:/app/media
+      - "$MEDIA_REPOSITORY:/app/media"
       - ./dedipoc-api/src:/app/src
       - ./logs:/app/logs
     depends_on:
