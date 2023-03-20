@@ -45,6 +45,7 @@ services:
     volumes:
       - /app/node_modules
       - ./dedipoc:/app
+      - shared:/app/build
   nginx:
     depends_on:
       - dedipoc
@@ -54,10 +55,11 @@ services:
       dockerfile: Dockerfile
       context: ./nginx
     ports:
-      - 80:80
+      - "$NGINX_PORT:80"
       - 443:443
     volumes:
       - ./certbot/www:/var/www/certbot/:ro
+      - shared:/usr/share/nginx/html
   certbot:
     image: certbot/certbot:latest
     volumes:
@@ -66,4 +68,5 @@ services:
 volumes:
   mongodb:
   mongodb_config:
+  shared:
 

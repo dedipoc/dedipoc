@@ -1,5 +1,5 @@
 export async function getVideos() {
-  const response = await fetch("http://localhost:8085/video", {
+  const response = await fetch(`/api/video`, {
     method: "GET",
     headers: new Headers({
       "Content-Type": "application/json",
@@ -14,7 +14,7 @@ export async function getVideos() {
 }
 
 // export async function downloadVideo(id) {
-//   const response = await fetch(`http://localhost:8085/video/${id}/download`, {
+//   const response = await fetch(`${process.env.DEDIPOC_URL}/api/video/${id}/download`, {
 //     method: "GET",
 //     headers: new Headers({
 //       "Content-Type": "application/json",

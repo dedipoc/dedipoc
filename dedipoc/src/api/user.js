@@ -1,5 +1,5 @@
 export async function getCurrentUser() {
-  const response = await fetch("http://localhost:8085/user", {
+  const response = await fetch(`/api/user`, {
     method: "GET",
     headers: new Headers({
       "Content-Type": "application/json",
@@ -14,7 +14,7 @@ export async function getCurrentUser() {
 }
 
 export async function createUser(params) {
-  const response = await fetch("http://localhost:8085/user", {
+  const response = await fetch(`/api/user`, {
     method: "POST",
     headers: new Headers({
       "Content-Type": "application/json",

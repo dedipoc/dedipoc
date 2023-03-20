@@ -18,12 +18,16 @@ export default function Videos() {
     getVideos();
   }, []);
 
+  useEffect(() => {
+    console.log("Videos", videos);
+  }, [videos]);
+
   return (
     <div className="videos-container">
       <div></div>
       {videos &&
         videos.map((v) => (
-          <a href={`http://localhost:8085/video/${v._id}/download`}>
+          <a href={`/api/video/${v._id}/download`}>
             <div className="videos-element">
               <h2>{v.displayName}</h2>
               <Download />

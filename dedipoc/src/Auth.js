@@ -12,8 +12,6 @@ export default function Auth(props) {
     login(username.current?.value, password?.current.value);
   }
 
-  console.debug("user", user);
-
   return (
     <div className="Auth-form-container">
       <form className="Auth-form" onSubmit={handleSubmit}>

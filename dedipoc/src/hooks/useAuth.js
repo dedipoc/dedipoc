@@ -45,7 +45,6 @@ export function AuthProvider({ children }) {
         navigate("/");
       })
       .catch((error) => {
-        console.debug("ERROR", error);
         setError(error);
       })
       .finally(() => setLoading(false));
