@@ -1,5 +1,5 @@
 export async function getCurrentUser(token) {
-  const response = await fetch(`http://localhost:3001/user`, {
+  const response = await fetch(`/user`, {
     method: "GET",
     headers: new Headers({
       "Content-Type": "application/json",
@@ -13,7 +13,7 @@ export async function getCurrentUser(token) {
 }
 
 export async function createUser({ token, data }) {
-  const response = await fetch(`http://localhost:3001/user`, {
+  const response = await fetch(`/user`, {
     method: "POST",
     headers: new Headers({
       "Content-Type": "application/json",
@@ -28,7 +28,7 @@ export async function createUser({ token, data }) {
 }
 
 export async function getUsers({ token }) {
-  const response = await fetch(`http://localhost:3001/user/all`, {
+  const response = await fetch(`/user/all`, {
     method: "GET",
     headers: new Headers({
       "Content-Type": "application/json",
@@ -42,7 +42,7 @@ export async function getUsers({ token }) {
 }
 
 export async function deleteUser({ token, params }) {
-  const response = await fetch(`http://localhost:3001/user/${params}`, {
+  const response = await fetch(`/user/${params}`, {
     method: "DELETE",
     headers: new Headers({
       "Content-Type": "application/json",

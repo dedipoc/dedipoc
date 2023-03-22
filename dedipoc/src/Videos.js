@@ -38,7 +38,7 @@ export default function Videos() {
   async function handleDownload(id, name) {
     fetchWithAuth(getDownloadToken, null).then((dlToken) => {
       const link = document.createElement("a");
-      link.href = `http://localhost:3001/video/${id}/download?token=${dlToken.token}`;
+      link.href = `/video/${id}/download?token=${dlToken.token}`;
       link.setAttribute("download", name);
       document.body.appendChild(link);
       link.click();
@@ -49,7 +49,7 @@ export default function Videos() {
   async function handleLink(id) {
     fetchWithAuth(getDownloadToken, null).then((dlToken) => {
       navigator.clipboard.writeText(
-        `http://localhost:3001/video/${id}/download?token=${dlToken.token}`
+        `/video/${id}/download?token=${dlToken.token}`
       );
       toast.success(
         "Lien copié! Collez-le dans VLC pour lire la video (Ce lien expire dans 1 minute)",
