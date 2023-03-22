@@ -58,13 +58,15 @@ services:
       - "$NGINX_PORT:80"
       - 443:443
     volumes:
-      - ./certbot/www:/var/www/certbot/:ro
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
       - shared:/usr/share/nginx/html
   certbot:
     image: certbot/certbot:latest
     volumes:
-      - ./certbot/www/:/var/www/certbot/:rw
-      - ./certbot/conf/:/etc/letsencrypt/:rw
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email dedipoc@gmail.com -d dedipoc.fr --agree-tos
 volumes:
   mongodb:
   mongodb_config:
