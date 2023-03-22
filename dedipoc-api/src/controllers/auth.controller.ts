@@ -37,7 +37,6 @@ export async function updatePassword(req: Request, res: Response) {
 
 export async function login(req: Request, res: Response) {
   const { username, password } = req.body;
-  const { authenticated } = req.session;
 
   if (!username || !password) {
     res.status(400).json({ message: "username and password required." });
@@ -52,22 +51,19 @@ export async function login(req: Request, res: Response) {
     if (!user.matchPassword || !(await user.matchPassword(password))) {
       throw new Error("Invalid password.");
     }
-    req.session.authenticated = true;
-    req.session.uid = user._id.toString();
-    req.session.roles = user.roles;
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || "dev", {
+      expiresIn: "1d",
+    });
+
+    user.sessionToken = token;
+    await user.save();
 
     res.json({
       id: user._id,
       username: user.username,
       roles: user.roles,
-      token: jwt.sign(
-        {
-          id: user._id,
-          username: user.username,
-          roles: user.roles,
-        },
-        "gloireapatrick"
-      ),
+      token: token,
     });
   } catch (error: any) {
     res.status(401).json({ message: error.toString() });
@@ -75,15 +71,15 @@ export async function login(req: Request, res: Response) {
   }
 }
 
-export function logout(req: Request, res: Response) {
-  req.session.destroy((err: any) => {
-    if (err) {
-      logger.error("Failed to destroy session", err);
-      res
-        .status(500)
-        .json({ message: "Failed to destroy session", error: err });
-    } else {
-      res.sendStatus(200);
-    }
-  });
+export async function logout(req: Request, res: Response) {
+  const token = req.authorization?.token;
+  if (!token) {
+    return res.sendStatus(200);
+  }
+  const user = await UserModel.findOne({ sessionToken: token });
+  if (!user) {
+    return res.sendStatus(200);
+  }
+  user.sessionToken = null;
+  await user.save();
 }

@@ -15,6 +15,7 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [videos, setVideos] = useState();
+  const [explore, setExplore] = useState();
   const [user, setUser] = useState();
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
@@ -29,9 +30,11 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     usersApi
-      .getCurrentUser()
+      .getCurrentUser(user?.token)
       .then((user) => setUser(user))
-      .catch((_error) => {})
+      .catch((_error) => {
+        navigate("/auth");
+      })
       .finally(() => setLoadingInitial(false));
   }, []);
 
@@ -45,7 +48,7 @@ export function AuthProvider({ children }) {
         navigate("/");
       })
       .catch((error) => {
-        setError(error);
+        setError("Erreur d'authentification");
       })
       .finally(() => setLoading(false));
   }
@@ -56,7 +59,7 @@ export function AuthProvider({ children }) {
     usersApi
       .createUser({ username, password })
       .then((videos) => setVideos(videos))
-      .catch((error) => setError(error))
+      .catch((error) => setError("Impossible de créer le compte"))
       .finally(() => setLoading(false));
   }
 
@@ -64,10 +67,36 @@ export function AuthProvider({ children }) {
     setLoading(true);
 
     videosApi
-      .getVideos()
+      .getVideos(user?.token)
       .then((videos) => setVideos(videos))
-      .catch((error) => setError(error))
+      .catch((error) => setError("Erreur lors du chargement des videos"))
       .finally(() => setLoading(false));
+  }
+
+  function explorePath(path = "") {
+    setLoading(true);
+
+    videosApi
+      .explore(user?.token, path)
+      .then((explore) => setExplore(explore))
+      .catch((error) => setError("Erreur lors du chargement des fichiers"))
+      .finally(() => setLoading(false));
+  }
+
+  async function fetchWithAuth(apiCall, data, params = "") {
+    setLoading(true);
+
+    let result = null;
+
+    try {
+      result = await apiCall({ token: user?.token, data, params });
+    } catch (error) {
+      setError("Erreur lors de la connexion au serveur.");
+    }
+
+    setLoading(false);
+
+    return result;
   }
 
   function logout() {
@@ -84,6 +113,9 @@ export function AuthProvider({ children }) {
       logout,
       getVideos,
       videos,
+      explorePath,
+      explore,
+      fetchWithAuth,
     }),
     [user, loading, error]
   );

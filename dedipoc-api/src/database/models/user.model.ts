@@ -17,6 +17,7 @@ const UserSchema = new Schema(
       ],
       validate: (v: string[]) => Array.isArray(v) && v.length > 0,
     },
+    sessionToken: { type: String },
   },
   {
     timestamps: true,

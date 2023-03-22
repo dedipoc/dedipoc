@@ -1,8 +1,8 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import useAuth from "./hooks/useAuth";
 
-export default function Auth(props) {
-  const { user, loading, error, login, signUp, logout } = useAuth();
+export default function Auth() {
+  const { login } = useAuth();
 
   const username = useRef();
   const password = useRef();
@@ -17,11 +17,7 @@ export default function Auth(props) {
       <form className="Auth-form" onSubmit={handleSubmit}>
         <div className="Auth-form-content">
           <h3 className="Auth-form-title">Connexion</h3>
-          <div>
-            {error && (
-              <span style={{ color: "red" }}>Erreur d'authentification</span>
-            )}
-          </div>
+          <div></div>
           <div className="form-group mt-3">
             <label>Utilisateur</label>
             <input

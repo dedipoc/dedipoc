@@ -1,29 +1,56 @@
-export async function getCurrentUser() {
-  const response = await fetch(`/api/user`, {
+export async function getCurrentUser(token) {
+  const response = await fetch(`http://localhost:3001/user`, {
     method: "GET",
     headers: new Headers({
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     }),
-    credentials: "include",
   });
   if (response.status !== 200) {
-    throw new Error("Authentication failed");
+    throw new Error("Vous n'êtes pas connecté");
   }
-  const user = await response.json();
-  return user;
+  return await response.json();
 }
 
-export async function createUser(params) {
-  const response = await fetch(`/api/user`, {
+export async function createUser({ token, data }) {
+  const response = await fetch(`http://localhost:3001/user`, {
     method: "POST",
     headers: new Headers({
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     }),
-    credentials: "include",
-    body: JSON.stringify(params),
+    body: JSON.stringify(data),
   });
   if (response.status !== 200) {
-    throw new Error("Authentication failed");
+    throw new Error("Erreur lors de la création de l'utilisateur");
+  }
+  return true;
+}
+
+export async function getUsers({ token }) {
+  const response = await fetch(`http://localhost:3001/user/all`, {
+    method: "GET",
+    headers: new Headers({
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    }),
+  });
+  if (response.status !== 200) {
+    throw new Error("Erreur lors de la récupération des utilisateurs");
+  }
+  return await response.json();
+}
+
+export async function deleteUser({ token, params }) {
+  const response = await fetch(`http://localhost:3001/user/${params}`, {
+    method: "DELETE",
+    headers: new Headers({
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    }),
+  });
+  if (response.status !== 200) {
+    throw new Error("Erreur lors de la suppression de l'utilisateur");
   }
   return true;
 }

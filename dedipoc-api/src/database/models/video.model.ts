@@ -6,6 +6,7 @@ const VideoSchema = new Schema(
     displayName: { type: String },
     rawFile: { type: String },
     streamFile: { type: String },
+    group: { type: String },
   },
   {
     timestamps: true,

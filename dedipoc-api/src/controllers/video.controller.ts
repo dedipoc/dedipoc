@@ -3,6 +3,8 @@ import VideoModel from "../database/models/video.model";
 import logger from "../utils/logger";
 import fs from "fs";
 import path from "path";
+import jwt from "jsonwebtoken";
+import { PipelineStage } from "mongoose";
 
 export async function addVideo(req: Request, res: Response) {
   try {
@@ -64,8 +66,32 @@ export async function updateVideo(req: Request, res: Response) {
 
 export async function getVideos(req: Request, res: Response) {
   try {
-    let videos = await VideoModel.find({});
-    return res.json({ videos });
+    let group = req.query.group;
+
+    let pipeline: PipelineStage[] = [
+      {
+        $group: {
+          _id: "$group",
+          videos: {
+            $push: {
+              id: "$_id",
+              displayName: "$displayName",
+              rawFile: "$rawFile",
+              streamFile: "$streamFile",
+              group: "$group",
+            },
+          },
+        },
+      },
+    ];
+    if (group) {
+      pipeline = [{ $match: { group } }, ...pipeline];
+    }
+    let groups = await VideoModel.aggregate(pipeline);
+    if (groups.length < 2) {
+      groups[0]._id = null;
+    }
+    return res.json({ groups });
   } catch (error: any) {
     logger.error("[Add Video] Failed to add video", error);
     return res.status(500).send(error);
@@ -93,9 +119,10 @@ export async function downloadVideo(req: Request, res: Response) {
     if (!fs.existsSync(filePath)) {
       throw new Error(`[File Error] This video cannot be downloaded.`);
     }
+    res.type("blob");
     return res.download(filePath);
   } catch (error: any) {
-    logger.error("[Add Video] Failed to add video", error);
+    logger.error(`[Download Video] ${error.toString()}`);
     return res.status(500).send(error);
   }
 }
@@ -153,4 +180,26 @@ export async function streamVideo(req: Request, res: Response) {
     logger.error("[Add Video] Failed to add video", error);
     return res.status(500).send(error);
   }
+}
+
+export async function explore(req: Request, res: Response) {
+  try {
+    const { path: currentPath } = req.body;
+    const currentDir = path.join("/app/media", currentPath);
+    const dirContent = fs.readdirSync(currentDir).map((f) => ({
+      name: f,
+      fullPath: path.join(currentPath, f),
+      isDirectory: fs.statSync(path.join(currentDir, f)).isDirectory(),
+    }));
+    res.send({ path: currentPath, directory: dirContent });
+  } catch (error: any) {
+    res.status(500).send({ error });
+  }
+}
+
+export async function getDownloadToken(req: Request, res: Response) {
+  const token = jwt.sign({}, process.env.JWT_SECRET || "dev", {
+    expiresIn: 60,
+  });
+  res.send({ token });
 }

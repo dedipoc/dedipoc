@@ -20,10 +20,9 @@ app.use(express.static(__dirname));
 app.use(express.json());
 app.use(express.urlencoded({ limit: "10mb" }));
 app.use(morganMiddleware);
-app.use(sessionMiddleware);
 app.use(rateLimitMiddleware);
-// app.use(corsMiddleware);
 app.use(helmetMiddleware);
+app.use(sessionMiddleware);
 
 app.use(
   cors({

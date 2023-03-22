@@ -2,6 +2,6 @@ export interface IUser {
   username: string;
   password: string;
   roles: string[];
-  verified?: boolean;
+  sessionToken: string | null;
   matchPassword?(password: string): Promise<boolean>;
 }
