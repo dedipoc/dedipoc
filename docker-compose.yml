@@ -47,10 +47,12 @@ services:
       - ./dedipoc:/app
       - shared:/app/build
   nginx:
+    container_name: nginx
+    restart: unless-stopped
+    image: nginx
     depends_on:
       - dedipoc
       - dedipoc-api
-    restart: always
     ports:
       - "$NGINX_PORT:80"
       - 443:443
