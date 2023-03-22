@@ -38,7 +38,7 @@ export default function Videos() {
   async function handleDownload(id, name) {
     fetchWithAuth(getDownloadToken, null).then((dlToken) => {
       const link = document.createElement("a");
-      link.href = `/video/${id}/download?token=${dlToken.token}`;
+      link.href = `https://www.dedipoc.fr/api/video/${id}/download?token=${dlToken.token}`;
       link.setAttribute("download", name);
       document.body.appendChild(link);
       link.click();
@@ -49,7 +49,7 @@ export default function Videos() {
   async function handleLink(id) {
     fetchWithAuth(getDownloadToken, null).then((dlToken) => {
       navigator.clipboard.writeText(
-        `/video/${id}/download?token=${dlToken.token}`
+        `https://www.dedipoc.fr/api/video/${id}/download?token=${dlToken.token}`
       );
       toast.success(
         "Lien copié! Collez-le dans VLC pour lire la video (Ce lien expire dans 1 minute)",
