@@ -1,5 +1,5 @@
 export async function getVideos({ token, data, params }) {
-  const response = await fetch(`/video?${params}`, {
+  const response = await fetch(`/api/video?${params}`, {
     method: "GET",
     headers: new Headers({
       "Content-Type": "application/json",
@@ -13,7 +13,7 @@ export async function getVideos({ token, data, params }) {
 }
 
 export async function explore({ token, data }) {
-  const response = await fetch(`/video/explore`, {
+  const response = await fetch(`/api/video/explore`, {
     method: "POST",
     headers: new Headers({
       "Content-Type": "application/json",
@@ -28,7 +28,7 @@ export async function explore({ token, data }) {
 }
 
 export async function createVideo({ token, data }) {
-  const response = await fetch(`/video/`, {
+  const response = await fetch(`/api/video/`, {
     method: "POST",
     headers: new Headers({
       "Content-Type": "application/json",
@@ -43,7 +43,7 @@ export async function createVideo({ token, data }) {
 }
 
 export async function updateVideo({ token, data, params }) {
-  const response = await fetch(`/video/${params}`, {
+  const response = await fetch(`/api/video/${params}`, {
     method: "PUT",
     headers: new Headers({
       "Content-Type": "application/json",
@@ -58,7 +58,7 @@ export async function updateVideo({ token, data, params }) {
 }
 
 export async function getDownloadToken({ token }) {
-  const response = await fetch(`/video/dl-token`, {
+  const response = await fetch(`/api/video/dl-token`, {
     method: "GET",
     headers: new Headers({
       "Content-Type": "application/json",
@@ -72,7 +72,7 @@ export async function getDownloadToken({ token }) {
 }
 
 export async function downloadVideo({ token, params, query }) {
-  const response = await fetch(`/video/${params}/download${query}`, {
+  const response = await fetch(`/api/video/${params}/download${query}`, {
     method: "GET",
     headers: new Headers({
       "Content-Type": "application/json",
