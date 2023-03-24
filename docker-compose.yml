@@ -20,6 +20,7 @@ services:
     volumes:
       - /app/node_modules
       - "$MEDIA_REPOSITORY:/app/media"
+      - "$UPLOAD_REPOSITORY:/app/upload"
       - ./dedipoc-api/src:/app/src
       - ./logs:/app/logs
     depends_on:
